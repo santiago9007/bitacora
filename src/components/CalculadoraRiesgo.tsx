@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Calculator, TrendingUp, TrendingDown, AlertTriangle } from 'lucide-react'
 import type { RiskCalc } from '../types'
+import { Label } from 'recharts'
 
 const DEFAULTS: RiskCalc = {
   capitalCuenta: 10000,
@@ -13,10 +14,13 @@ const DEFAULTS: RiskCalc = {
 }
 
 const ASSET_TYPES = [
+  {value: 'binaria', label: 'Binaria'},
+  {value: 'blitz', label: 'Blitz'},
+  {value: 'digital', label: 'Digital'},
   { value: 'forex', label: 'Forex' },
   { value: 'crypto', label: 'Crypto' },
   { value: 'acciones', label: 'Acciones' },
-  { value: 'futuros', label: 'Futuros' },
+  { value: 'materias primas', label: 'Materias primas' },
 ] as const
 
 export default function CalculadoraRiesgo() {
@@ -47,7 +51,32 @@ export default function CalculadoraRiesgo() {
       gananciaUSD = lotaje * diferenciaTP
       pipsSL = diferenciaSL
       pipsTP = diferenciaTP
+    } else if (calc.tipoActivo === 'binaria') {
+      // Opciones binarias: riesgo fijo, rendimiento porcentual típicamente 70-85%
+      lotaje = riesgoUSD  // El riesgo es el monto apostado
+      gananciaUSD = lotaje * 0.75  // Asumiendo 75% de retorno
+      pipsSL = diferenciaSL
+      pipsTP = diferenciaTP
+    } else if (calc.tipoActivo === 'blitz') {
+      // Trading de corto plazo: similar a forex pero con movimientos rápidos
+      pipsSL = Math.round(diferenciaSL / 0.0001)
+      pipsTP = Math.round(diferenciaTP / 0.0001)
+      lotaje = pipsSL > 0 ? riesgoUSD / (pipsSL * (calc.pipValue / 2)) : 0  // Pip value reducido
+      gananciaUSD = lotaje * pipsTP * (calc.pipValue / 2)
+    } else if (calc.tipoActivo === 'digital') {
+      // Derivados digitales: similar a binaria
+      lotaje = riesgoUSD
+      gananciaUSD = lotaje * 0.75
+      pipsSL = diferenciaSL
+      pipsTP = diferenciaTP
+    } else if (calc.tipoActivo === 'materias primas') {
+      // Futuros de materias primas: similar a forex con contratos
+      pipsSL = Math.round(diferenciaSL * 100)  // Convertir a puntos base
+      pipsTP = Math.round(diferenciaTP * 100)
+      lotaje = pipsSL > 0 ? riesgoUSD / (pipsSL * (calc.pipValue * 2)) : 0
+      gananciaUSD = lotaje * pipsTP * (calc.pipValue * 2)
     } else {
+      // Acciones y otros activos
       lotaje = riesgoUSD / diferenciaSL
       gananciaUSD = lotaje * diferenciaTP
       pipsSL = diferenciaSL

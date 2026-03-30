@@ -57,6 +57,6 @@ export interface RiskCalc {
   entradaPrecio: number
   stopLossPrecio: number
   takeProfitPrecio: number
-  tipoActivo: 'forex' | 'crypto' | 'acciones' | 'futuros'
+  tipoActivo: 'forex' | 'crypto' | 'acciones' | 'futuros' | 'binaria' | 'blitz' | 'digital' | 'materias primas'
   pipValue: number
 }
