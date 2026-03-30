@@ -1,0 +1,113 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary: 43 96% 56%;
+  --primary-foreground: 0 0% 5%;
+  --secondary: 220 13% 15%;
+  --secondary-foreground: 0 0% 90%;
+  --accent: 142 71% 45%;
+  --accent-foreground: 0 0% 5%;
+  --background: 220 20% 7%;
+  --foreground: 0 0% 93%;
+  --muted: 220 13% 12%;
+  --muted-foreground: 220 10% 55%;
+  --border: 220 13% 18%;
+  --card: 220 15% 10%;
+  --card-foreground: 0 0% 93%;
+  --destructive: 0 72% 58%;
+  --destructive-foreground: 0 0% 98%;
+  --ring: 43 96% 56%;
+  --radius: 0.5rem;
+
+  --profit: 142 71% 45%;
+  --loss: 0 72% 58%;
+  --neutral: 43 96% 56%;
+
+  --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.4);
+  --shadow-glow: 0 0 20px rgba(251, 189, 35, 0.15);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body, #root {
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: hsl(var(--muted));
+}
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--border));
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground));
+}
+
+/* Number inputs monospace */
+input[type="number"],
+.mono {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* Input base class */
+.input-base {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  background: hsl(var(--muted));
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius);
+  color: hsl(var(--foreground));
+  font-size: 0.875rem;
+  font-family: inherit;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.input-base::placeholder {
+  color: hsl(var(--muted-foreground));
+}
+.input-base:focus {
+  outline: none;
+  border-color: hsl(var(--primary));
+  box-shadow: 0 0 0 2px hsl(var(--primary) / 0.15);
+}
+.input-base option {
+  background: hsl(var(--secondary));
+}
+
+/* Focus ring */
+input:focus,
+select:focus,
+textarea:focus,
+button:focus-visible {
+  outline: 2px solid hsl(var(--primary));
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
