@@ -10,6 +10,7 @@ import Historial from './components/Historial'
 import Estadisticas from './components/Estadisticas'
 import Estrategias from './components/Estrategias'
 import EmocionTrade from './components/EmocionTrade'
+import kingdomCoders from './assets/kingdom-coders.png';
 
 const NAV_ITEMS: { id: Page; label: string; icon: React.ElementType; desc: string }[] = [
   { id: 'registro', label: 'Registro', icon: BookOpen, desc: 'Registrar operaciones' },
@@ -101,7 +102,7 @@ export default function App() {
 
         {/* Footer */}
         <div className="px-10 py-15 border-t border-border flex-shrink-0">
-          <img src="./src/assets/kingdom-coders.png" alt="localStorage" className="w-25 h-25 filter invert brightness-75"/>
+          <img src={kingdomCoders} alt="kingdomCoders" className="w-25 h-25 filter invert brightness-75"/>
         </div>
       </aside>
 
