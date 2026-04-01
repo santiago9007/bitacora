@@ -100,12 +100,8 @@ export default function App() {
         </nav>
 
         {/* Footer */}
-        <div className="px-4 py-4 border-t border-border flex-shrink-0">
-          <p className="text-xs text-muted-foreground">Datos guardados localmente</p>
-          <div className="flex items-center gap-1.5 mt-1">
-            <div className="w-1.5 h-1.5 rounded-full bg-profit" />
-            <p className="text-xs text-profit font-medium">localStorage activo</p>
-          </div>
+        <div className="px-10 py-15 border-t border-border flex-shrink-0">
+          <img src="./src/assets/kingdom-coders.png" alt="localStorage" className="w-25 h-25 filter invert brightness-75"/>
         </div>
       </aside>
 
