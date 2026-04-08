@@ -1,16 +1,21 @@
-import { useState } from 'react'
+import { useState } from 'react' // React hook para manejar el estado de la página y el sidebar
 import {
   BookOpen, Calculator, Clock, BarChart2, Target, Brain,
-  Menu, X, ChevronRight,
-} from 'lucide-react'
+  Menu, X, ChevronRight, LogOut,
+} from 'lucide-react' // Importación de íconos desde lucide-react
+
+//
 import { type Page } from './types'
+import Login, { AuthProvider, useAuth } from './components/Login' // Componente de login
 import RegistroTrade from './components/RegistroTrade'
 import CalculadoraRiesgo from './components/CalculadoraRiesgo'
 import Historial from './components/Historial'
 import Estadisticas from './components/Estadisticas'
 import Estrategias from './components/Estrategias'
 import EmocionTrade from './components/EmocionTrade'
+import kingdomCoders from './assets/kingdom-coders.png'; // Importa la imagen
 
+// Definición de los elementos de navegación con su id, etiqueta, ícono y descripción
 const NAV_ITEMS: { id: Page; label: string; icon: React.ElementType; desc: string }[] = [
   { id: 'registro', label: 'Registro', icon: BookOpen, desc: 'Registrar operaciones' },
   { id: 'calculadora', label: 'Calculadora', icon: Calculator, desc: 'Calcular riesgo y lotaje' },
@@ -20,6 +25,7 @@ const NAV_ITEMS: { id: Page; label: string; icon: React.ElementType; desc: strin
   { id: 'emocion', label: 'Emoción', icon: Brain, desc: 'Psicología del trading' },
 ]
 
+// Mapeo de páginas a sus componentes correspondientes
 const PAGE_COMPONENTS: Record<Page, React.ComponentType> = {
   registro: RegistroTrade,
   calculadora: CalculadoraRiesgo,
@@ -29,9 +35,14 @@ const PAGE_COMPONENTS: Record<Page, React.ComponentType> = {
   emocion: EmocionTrade,
 }
 
-export default function App() {
-  const [page, setPage] = useState<Page>('registro')
+function AppContent() {
+  const [page, setPage] = useState<Page>('registro') // Estado para manejar la página actual
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const { isAuthenticated, logout } = useAuth()
+
+  if (!isAuthenticated) {
+    return <Login />
+  }
 
   const PageComponent = PAGE_COMPONENTS[page]
 
@@ -100,12 +111,16 @@ export default function App() {
         </nav>
 
         {/* Footer */}
-        <div className="px-4 py-4 border-t border-border flex-shrink-0">
-          <p className="text-xs text-muted-foreground">Datos guardados localmente</p>
-          <div className="flex items-center gap-1.5 mt-1">
-            <div className="w-1.5 h-1.5 rounded-full bg-profit" />
-            <p className="text-xs text-profit font-medium">localStorage activo</p>
-          </div>
+        <div className="px-10 py-15 border-t border-border flex-shrink-0 space-y-3">
+          <img src={kingdomCoders} alt="kingdomCoders" className="w-25 h-25 filter invert brightness-75"/>
+          <button
+            type="button"
+            onClick={logout}
+            className="w-full inline-flex items-center justify-center gap-2 rounded-md  px-3 py-2 text-sm font-medium text-foreground hover:bg-muted"
+          >
+            <LogOut size={16} />
+            Cerrar sesión
+          </button>
         </div>
       </aside>
 
@@ -149,5 +164,13 @@ export default function App() {
         </main>
       </div>
     </div>
+  )
+}
+
+export default function App() {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
   )
 }
