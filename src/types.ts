@@ -1,4 +1,4 @@
-export type Page = 'registro' | 'calculadora' | 'historial' | 'estadisticas' | 'estrategias' | 'emocion'
+export type Page = 'registro' | 'calculadora' | 'historial' | 'estadisticas' | 'estrategias' | 'emocion' 
 
 export type Direction = 'LONG' | 'SHORT'
 export type Outcome = 'GANANCIA' | 'PERDIDA' | 'BREAKEVEN' | 'ABIERTO'
