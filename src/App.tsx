@@ -13,7 +13,7 @@ import Historial from './components/Historial'
 import Estadisticas from './components/Estadisticas'
 import Estrategias from './components/Estrategias'
 import EmocionTrade from './components/EmocionTrade'
-import kingdomCoders from "../assets/kingdom-coders.png";
+import kingdomCoders from "./assets/kingdom-coders.png";
 
 // Definición de los elementos de navegación con su id, etiqueta, ícono y descripción
 const NAV_ITEMS: { id: Page; label: string; icon: React.ElementType; desc: string }[] = [
