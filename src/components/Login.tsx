@@ -1,6 +1,8 @@
 import { Mail, Lock, Eye, EyeOff, AlertCircle, Loader2 } from 'lucide-react'
 import React, { createContext, useContext, useState, ReactNode } from 'react';
-import kingdomCoders from '../assets/kingdom-coders.png'; 
+import kingdomCoders from '../assets/kingdom-coders.png'; // Importa la imagen
+import { supabase } from '../lib/supabaseClient'
+import { useEffect } from 'react'
 
 type AuthMode = 'login' | 'register' | 'forgot'
 
@@ -23,23 +25,73 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(false)
   const [isAuthenticated, setIsAuthenticated] = useState(false)
 
-  async function login(email: string, password: string, nombre?: string) {
-    setIsLoading(true)
-    await new Promise(resolve => setTimeout(resolve, 600))
+  // Verificar sesión al cargar el componente
+  useEffect(() => {
+  supabase.auth.getSession().then(({ data }) => {
+    setIsAuthenticated(!!data.session) // Si hay una sesión activa, isAuthenticated será true
+  })
 
+  // Escuchar cambios en el estado de autenticación
+  const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+    setIsAuthenticated(!!session)
+  })
+
+  return () => {
+    listener.subscription.unsubscribe()
+  }
+}, [])
+
+  async function login(email: string, password: string, nombre?: string) {
+  setIsLoading(true)
+
+  try {
     if (!email.trim() || !password.trim()) {
-      setIsLoading(false)
       throw new Error('Email y contraseña son requeridos')
     }
 
-    setIsAuthenticated(true)
-    setIsLoading(false)
-    return Promise.resolve()
-  }
+    // 🟢 REGISTER
+    if (nombre) {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: { nombre }
+        }
+      })
 
-  function logout() {
-    setIsAuthenticated(false)
+      if (error) throw error
+
+      if (data.user) {
+        await supabase.from('register').insert({
+          id: data.user.id,
+          email,
+          name: nombre
+        })
+      }
+
+    } else {
+      // 🟢 LOGIN
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      })
+
+      if (error) throw error
+    }
+
+    setIsAuthenticated(true)
+
+  } finally {
+    setIsLoading(false)
   }
+}
+
+
+
+async function logout() {
+  await supabase.auth.signOut()
+  setIsAuthenticated(false)
+}
 
   return (
     <AuthContext.Provider value={{ login, isLoading, isAuthenticated, logout }}>
@@ -84,10 +136,15 @@ export default function Login() {
       }
 
       if (mode === 'forgot') {
-        setSuccess('Se ha enviado un enlace de recuperación a tu email (simulado)')
-        setTimeout(() => setMode('login'), 3000)
-        return
-      }
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: 'http://localhost:5173/reset-password'
+      })
+
+  if (error) throw error
+
+  setSuccess('Revisa tu correo para recuperar tu contraseña')
+  return
+}
 
       await login(email, password, mode === 'register' ? nombre : undefined)
       setSuccess('¡Bienvenido! Iniciando sesión...')
