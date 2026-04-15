@@ -61,13 +61,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       if (error) throw error
 
-      if (data.user) {
-        await supabase.from('register').insert({
+      const { error: insertError } = await supabase
+        .from('register')
+        .insert({
           id: data.user.id,
           email,
           name: nombre
         })
-      }
+
+      if (insertError) throw insertError
 
     } else {
       // 🟢 LOGIN
@@ -100,11 +102,12 @@ async function logout() {
   )
 }
 
+// Componente principal de Login con manejo de estados, validaciones y UI
 export default function Login() {
   const { login, isLoading } = useAuth()
   const [mode, setMode] = useState<AuthMode>('login')
-  const [email, setEmail] = useState('demo@kingdomtrader.com')
-  const [password, setPassword] = useState('Demo@123')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const [nombre, setNombre] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
@@ -119,6 +122,7 @@ export default function Login() {
     return pwd.length >= 6
   }
 
+  // Manejar envío del formulario para login, registro o recuperación de contraseña
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError('')
@@ -137,7 +141,7 @@ export default function Login() {
 
       if (mode === 'forgot') {
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: 'http://localhost:5173/reset-password'
+        redirectTo: `${window.location.origin}/reset-password`
       })
 
   if (error) throw error
@@ -157,6 +161,7 @@ export default function Login() {
     setError(`Integración con ${provider} no disponible en demo`)
   }
 
+  // Cambiar modo de autenticación (login, register, forgot) y resetear mensajes
   function switchMode(newMode: AuthMode) {
     setError('')
     setSuccess('')
@@ -165,7 +170,7 @@ export default function Login() {
 
   return (
     <div className="min-h-screen w-full bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center p-4 relative overflow-hidden">
-      {/* Background decorations */}
+      {/* Fondos decorativos con blur y colores suaves */}
       <div className="absolute top-0 left-0 w-96 h-96 bg-yellow-500/10 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
       <div className="absolute bottom-0 right-0 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl translate-x-1/2 translate-y-1/2" />
 
@@ -180,7 +185,7 @@ export default function Login() {
             </div>
           </div>
 
-          {/* Right side - Form Card */}
+          {/* Right side - Form */}
           <div className="w-full max-w-sm mx-auto">
             <div className="bg-slate-800/40 backdrop-blur-md border border-slate-700/50 rounded-2xl p-8 shadow-2xl">
               
@@ -202,7 +207,7 @@ export default function Login() {
                 </p>
               </div>
 
-              {/* Messages */}
+              {/* Mensajes */}
               {error && (
                 <div className="mb-4 p-3 bg-red-500/20 border border-red-500/50 rounded-lg flex gap-2 items-start">
                   <AlertCircle size={16} className="text-red-400 flex-shrink-0 mt-0.5" />
@@ -216,7 +221,7 @@ export default function Login() {
                 </div>
               )}
 
-              {/* Form */}
+              {/* Formulario */}
               <form onSubmit={handleSubmit} className="space-y-4">
                 
                 {/* Email Input */}
@@ -235,7 +240,7 @@ export default function Login() {
                   </div>
                 </div>
 
-                {/* Nombre Input (Register) */}
+                {/* Nombre Input (Registro) */}
                 {mode === 'register' && (
                   <div>
                     <label className="block text-xs font-semibold text-slate-300 mb-2 uppercase">Nombre completo</label>
@@ -276,7 +281,7 @@ export default function Login() {
                   </div>
                 )}
 
-                {/* Confirm Password Input (Register) */}
+                {/* Confirmar Password Input (Registro) */}
                 {mode === 'register' && (
                   <div>
                     <label className="block text-xs font-semibold text-slate-300 mb-2 uppercase">Confirmar contraseña</label>
@@ -294,7 +299,7 @@ export default function Login() {
                   </div>
                 )}
 
-                {/* Main Button */}
+                {/* Boton de submit */}
                 <button
                   type="submit"
                   disabled={isLoading}

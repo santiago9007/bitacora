@@ -7,7 +7,7 @@ export type Emotion =
   | 'Sereno'
   | 'Confiado'
   | 'Ansioso'
-  | 'FOMO'
+  | 'Asustado'
   | 'Vengativo'
   | 'Disciplinado'
   | 'Impulsivo'

@@ -1,4 +1,5 @@
 import { Trade, Strategy, EmotionEntry } from './types'
+import { supabase } from '../src/lib/supabaseClient'
 
 const KEYS = {
   trades: 'bitacora_trades',
@@ -6,6 +7,7 @@ const KEYS = {
   emotions: 'bitacora_emotions',
 }
 
+// Funciones genéricas para cargar y guardar datos en localStorage con manejo de errores
 function load<T>(key: string, fallback: T): T {
   try {
     const raw = localStorage.getItem(key)
@@ -19,7 +21,7 @@ function save<T>(key: string, data: T): void {
   localStorage.setItem(key, JSON.stringify(data))
 }
 
-// ── Trades ───────────────────────────────────────────────────────────────────
+// Trades
 export function getTrades(): Trade[] {
   return load<Trade[]>(KEYS.trades, [])
 }
@@ -40,7 +42,7 @@ export function deleteTrade(id: string): void {
   save(KEYS.trades, trades)
 }
 
-// ── Strategies ────────────────────────────────────────────────────────────────
+// Strategies
 export function getStrategies(): Strategy[] {
   return load<Strategy[]>(KEYS.strategies, [])
 }
@@ -61,7 +63,7 @@ export function deleteStrategy(id: string): void {
   save(KEYS.strategies, strategies)
 }
 
-// ── Emotion Entries ───────────────────────────────────────────────────────────
+// Emotion Entries
 export function getEmotions(): EmotionEntry[] {
   return load<EmotionEntry[]>(KEYS.emotions, [])
 }
@@ -82,7 +84,7 @@ export function deleteEmotion(id: string): void {
   save(KEYS.emotions, entries)
 }
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
+// Helpers 
 export function generateId(): string {
   return `${Date.now()}_${Math.random().toString(36).slice(2, 9)}`
 }

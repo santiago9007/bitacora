@@ -3,21 +3,24 @@ import { Plus, X, Trash2, Brain } from 'lucide-react'
 import { getEmotions, saveEmotion, deleteEmotion, generateId, getTrades } from '../store'
 import type { EmotionEntry, Emotion } from '../types'
 
+// Definición de emociones con sus emojis y colores asociados
 const EMOTIONS: { value: Emotion; emoji: string; color: string }[] = [
   { value: 'Sereno', emoji: '😌', color: 'bg-profit/20 text-profit border-profit/40' },
   { value: 'Confiado', emoji: '💪', color: 'bg-profit/20 text-profit border-profit/40' },
   { value: 'Disciplinado', emoji: '🎯', color: 'bg-profit/20 text-profit border-profit/40' },
   { value: 'Ansioso', emoji: '😰', color: 'bg-primary/20 text-primary border-primary/40' },
   { value: 'Dudoso', emoji: '🤔', color: 'bg-primary/20 text-primary border-primary/40' },
-  { value: 'FOMO', emoji: '😱', color: 'bg-loss/20 text-loss border-loss/40' },
+  { value: 'Asustado', emoji: '😱', color: 'bg-loss/20 text-loss border-loss/40' },
   { value: 'Impulsivo', emoji: '⚡', color: 'bg-loss/20 text-loss border-loss/40' },
   { value: 'Vengativo', emoji: '😡', color: 'bg-loss/20 text-loss border-loss/40' },
   { value: 'Eufórico', emoji: '🤩', color: 'bg-loss/20 text-loss border-loss/40' },
   { value: 'Frustrado', emoji: '😤', color: 'bg-loss/20 text-loss border-loss/40' },
 ]
 
+// Mapa rápido para obtener detalles de la emoción por su valor
 const EMOTION_MAP = Object.fromEntries(EMOTIONS.map(e => [e.value, e]))
 
+// Estado inicial vacío para el formulario
 const EMPTY: Omit<EmotionEntry, 'id'> = {
   fecha: new Date().toISOString().slice(0, 10),
   emocion: 'Sereno',
@@ -25,6 +28,7 @@ const EMPTY: Omit<EmotionEntry, 'id'> = {
   tradeId: undefined,
 }
 
+// Componente principal
 export default function EmocionTrade() {
   const [entries, setEntries] = useState<EmotionEntry[]>([])
   const [trades, setTrades] = useState<ReturnType<typeof getTrades>>([])
@@ -53,7 +57,7 @@ export default function EmocionTrade() {
     if (confirm('¿Eliminar esta entrada?')) { deleteEmotion(id); refresh() }
   }
 
-  // Stats
+  // Estadísticas de emociones para mostrar en el selector
   const stats = useMemo(() => {
     const count: Record<string, number> = {}
     entries.forEach(e => { count[e.emocion] = (count[e.emocion] ?? 0) + 1 })
@@ -75,7 +79,7 @@ export default function EmocionTrade() {
         </button>
       </div>
 
-      {/* Emotion selector stats */}
+      {/* Estadísticas de emociones */}
       {stats.total > 0 && (
         <div className="bg-card border border-border rounded-lg p-5 shadow-card">
           <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-4">Frecuencia Emocional</h2>
@@ -97,7 +101,7 @@ export default function EmocionTrade() {
         </div>
       )}
 
-      {/* Form */}
+      {/* Formulario */}
       {showForm && (
         <div className="bg-card border border-border rounded-lg p-6 shadow-card">
           <div className="flex items-center justify-between mb-5">
@@ -163,7 +167,7 @@ export default function EmocionTrade() {
         </div>
       )}
 
-      {/* Entries list */}
+      {/* Lista de entradas */}
       {entries.length === 0 ? (
         <div className="text-center py-20 text-muted-foreground">
           <Brain size={40} className="mx-auto mb-3 opacity-20" />

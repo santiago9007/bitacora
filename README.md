@@ -1,16 +1,57 @@
-# React + Vite
+# Bitácora de trading
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Aplicación web para registrar, analizar y mejorar operaciones de trading.
+Permite a los usuarios llevar un control detallado de sus trades y tomar decisiones
+basadas en datos.
 
-Currently, two official plugins are available:
+## Demo
+https://bitacora-one.vercel.app
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Capturas
+![Captura](src/assets/Captura.png)
 
-## React Compiler
+## Funcionalidades
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Autenticación
+- Registro e inicio de sesión de usuarios.
+- Manejo de sesiones con supabase.
 
-## Expanding the ESLint configuration
+### Módulos principales
+- Registro de trade.
+- Calculadora de riesgo.
+- Historial de operaciones.
+- Estadisticas.
+- Gestión de estrategias.
+- Registro emocional del trader.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Tecnologias
+- React.
+- TailwindCSS.
+- Supabase (autenticación y base de datos).
+- Vite.
+- Deploy en vercel
+
+## Estado del proyecto
+En desarrollo activo.
+
+Actualmente se están mejorando las funcionalidades de analisis y visualización de datos, 
+asi como la experiencia del usuario.
+
+## Contexto
+Este proyecto está siendo desarrollado para un usuario real, con mejoras
+continuas basadas en sus necesidades. El objetivo es construir una herramienta practica
+que ayude a mejorar la toma de decisiones en el trading.
+
+## Instalación
+1. Clonar el repositorio:
+https://github.com/santiago9007/bitacora.git
+
+2. Instalar dependencias:
+npm install
+
+3. Ejecutar:
+npm run dev
+
+## Autor
+
+David Santiago Diaz Román

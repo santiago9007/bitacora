@@ -3,6 +3,7 @@ import { Calculator, TrendingUp, TrendingDown, AlertTriangle } from 'lucide-reac
 import type { RiskCalc } from '../types'
 import { Label } from 'recharts'
 
+// Cálculo de lotaje y ratio R:R para diferentes tipos de activos
 const DEFAULTS: RiskCalc = {
   capitalCuenta: 10000,
   riesgoPorc: 1,
@@ -13,6 +14,7 @@ const DEFAULTS: RiskCalc = {
   pipValue: 10,
 }
 
+// Tipos de activos soportados
 const ASSET_TYPES = [
   {value: 'binaria', label: 'Binaria'},
   {value: 'blitz', label: 'Blitz'},
@@ -23,13 +25,14 @@ const ASSET_TYPES = [
   { value: 'materias primas', label: 'Materias primas' },
 ] as const
 
+// Componente principal
 export default function CalculadoraRiesgo() {
   const [calc, setCalc] = useState<RiskCalc>(DEFAULTS)
 
   const set = (key: keyof RiskCalc, val: unknown) =>
     setCalc(prev => ({ ...prev, [key]: val }))
 
-  // Derived calculations
+  // Cálculos principales
   const riesgoUSD = (calc.capitalCuenta * calc.riesgoPorc) / 100
   const diferenciaSL = Math.abs(calc.entradaPrecio - calc.stopLossPrecio)
   const diferenciaTP = Math.abs(calc.entradaPrecio - calc.takeProfitPrecio)
@@ -85,6 +88,7 @@ export default function CalculadoraRiesgo() {
     rrRatio = diferenciaTP > 0 ? diferenciaTP / diferenciaSL : 0
   }
 
+  // Determinar dirección de la operación y win rate de equilibrio
   const isLong = calc.takeProfitPrecio > calc.entradaPrecio
   const breakEvenWinRate = rrRatio > 0 ? (1 / (1 + rrRatio)) * 100 : 0
 
@@ -103,7 +107,7 @@ export default function CalculadoraRiesgo() {
             Parámetros
           </h2>
 
-          {/* Asset type */}
+          {/* Tipo de activo */}
           <div className="flex flex-col gap-1">
             <label className="text-xs text-muted-foreground uppercase tracking-wide">Tipo de Activo</label>
             <div className="grid grid-cols-4 gap-2">
@@ -162,7 +166,7 @@ export default function CalculadoraRiesgo() {
           </div>
         </div>
 
-        {/* Results */}
+        {/* Resultados */}
         <div className="space-y-4">
           {/* Main result */}
           <div className="bg-card border border-primary/30 rounded-lg p-6 shadow-glow">
@@ -175,7 +179,7 @@ export default function CalculadoraRiesgo() {
             </p>
           </div>
 
-          {/* Stats grid */}
+          {/* Stats adicionales */}
           <div className="grid grid-cols-2 gap-3">
             <StatBox label="Ratio R:R" value={rrRatio > 0 ? `1:${rrRatio.toFixed(2)}` : '—'}
               color={rrRatio >= 2 ? 'profit' : rrRatio >= 1 ? 'primary' : 'loss'} />
@@ -189,7 +193,7 @@ export default function CalculadoraRiesgo() {
               color="profit" />
           </div>
 
-          {/* Direction indicator */}
+          {/* Dirección indicador */}
           <div className={`flex items-center gap-3 p-4 rounded-lg border
             ${isLong ? 'bg-profit/10 border-profit/30' : 'bg-loss/10 border-loss/30'}`}>
             {isLong
@@ -205,7 +209,7 @@ export default function CalculadoraRiesgo() {
             </div>
           </div>
 
-          {/* Advice */}
+          {/* Advertencia de ratio R:R bajo */}
           {rrRatio > 0 && rrRatio < 1.5 && (
             <div className="flex items-start gap-3 p-4 rounded-lg bg-primary/10 border border-primary/30">
               <AlertTriangle size={16} className="text-primary mt-0.5 flex-shrink-0" />

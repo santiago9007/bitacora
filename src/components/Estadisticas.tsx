@@ -6,6 +6,7 @@ import {
 import { getTrades } from '../store'
 import type { Trade } from '../types'
 
+// Colores para los gráficos
 const COLORS = {
   profit: '#21C45D',
   loss: '#EF4444',
@@ -18,6 +19,7 @@ export default function Estadisticas() {
 
   useEffect(() => { setTrades(getTrades()) }, [])
 
+  // Cálculo de estadísticas principales y datos para gráficos
   const stats = useMemo(() => {
     const closed = trades.filter(t => t.resultado !== 'ABIERTO')
     const wins = closed.filter(t => t.resultado === 'GANANCIA')
@@ -35,7 +37,7 @@ export default function Estadisticas() {
       ? (winRate / 100) * avgWin - ((100 - winRate) / 100) * avgLoss
       : 0
 
-    // Equity curve: cumulative PnL per trade (sorted by date)
+    // Curva de equidad
     const sorted = [...trades]
       .filter(t => t.resultado !== 'ABIERTO')
       .sort((a, b) => a.fecha.localeCompare(b.fecha))
@@ -46,7 +48,7 @@ export default function Estadisticas() {
       return { fecha: t.fecha, pnl: parseFloat(cumPnl.toFixed(2)), trade: t.activo }
     })
 
-    // Monthly PnL
+    // PnL mensual
     const byMonth: Record<string, number> = {}
     sorted.forEach(t => {
       const m = t.fecha.slice(0, 7)
@@ -57,7 +59,7 @@ export default function Estadisticas() {
       month, pnl: parseFloat(pnl.toFixed(2)),
     })).sort((a, b) => a.month.localeCompare(b.month))
 
-    // By asset
+    // PnL por activo
     const byAsset: Record<string, { wins: number; losses: number; pnl: number }> = {}
     closed.forEach(t => {
       if (!byAsset[t.activo]) byAsset[t.activo] = { wins: 0, losses: 0, pnl: 0 }
@@ -68,14 +70,14 @@ export default function Estadisticas() {
       .map(([activo, d]) => ({ activo, ...d, pnl: parseFloat(d.pnl.toFixed(2)) }))
       .sort((a, b) => b.pnl - a.pnl).slice(0, 8)
 
-    // Outcome pie
+    // Pie data: distribución de resultados
     const pieData = [
       { name: 'Ganancias', value: wins.length, color: COLORS.profit },
       { name: 'Pérdidas', value: losses.length, color: COLORS.loss },
       { name: 'Breakeven', value: be.length, color: COLORS.neutral },
     ].filter(d => d.value > 0)
 
-    // Emotion performance
+    // Win rate por emoción
     const byEmotion: Record<string, { wins: number; total: number }> = {}
     closed.forEach(t => {
       if (!t.emocion) return
@@ -107,7 +109,7 @@ export default function Estadisticas() {
         <p className="text-muted-foreground text-sm mt-1">Análisis de rendimiento basado en {stats.closed.length} trades cerrados</p>
       </div>
 
-      {/* KPI Cards */}
+      {/* KPIs principales */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <KpiCard label="PnL Neto" value={`${stats.netPnl >= 0 ? '+' : ''}${stats.netPnl.toFixed(2)}$`}
           color={stats.netPnl >= 0 ? 'profit' : 'loss'} />
@@ -125,7 +127,7 @@ export default function Estadisticas() {
         <KpiCard label="Promedio Pérdida" value={`${stats.avgLoss.toFixed(2)}$`} color="loss" small />
       </div>
 
-      {/* Equity curve */}
+      {/* Curva de equidad */}
       {stats.equityCurve.length > 1 && (
         <ChartCard title="Curva de Equidad">
           <ResponsiveContainer width="100%" height={220}>
@@ -143,7 +145,7 @@ export default function Estadisticas() {
       )}
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Monthly PnL */}
+        {/* PnL mensual */}
         {stats.monthlyData.length > 0 && (
           <ChartCard title="PnL Mensual">
             <ResponsiveContainer width="100%" height={200}>
@@ -162,7 +164,7 @@ export default function Estadisticas() {
           </ChartCard>
         )}
 
-        {/* Outcome pie */}
+        {/* Distribución de resultados */}
         {stats.pieData.length > 0 && (
           <ChartCard title="Distribución de Resultados">
             <ResponsiveContainer width="100%" height={200}>
@@ -181,7 +183,7 @@ export default function Estadisticas() {
           </ChartCard>
         )}
 
-        {/* By asset */}
+        {/* Rendimiento por activo */}
         {stats.assetData.length > 0 && (
           <ChartCard title="Rendimiento por Activo">
             <ResponsiveContainer width="100%" height={200}>
@@ -200,7 +202,7 @@ export default function Estadisticas() {
           </ChartCard>
         )}
 
-        {/* Emotion performance */}
+        {/* win rate por emoción */}
         {stats.emotionData.length > 0 && (
           <ChartCard title="Win Rate por Emoción">
             <div className="space-y-2 mt-2">

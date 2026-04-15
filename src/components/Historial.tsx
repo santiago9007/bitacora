@@ -3,15 +3,18 @@ import { Search, Trash2, TrendingUp, TrendingDown, ChevronUp, ChevronDown, Downl
 import { getTrades, deleteTrade } from '../store'
 import type { Trade, Outcome, Direction } from '../types'
 
+// Mapeo de emociones a emojis para mostrar en la tabla
 const EMOTION_EMOJI: Record<string, string> = {
   Sereno: '😌', Confiado: '💪', Ansioso: '😰', FOMO: '😱',
   Vengativo: '😡', Disciplinado: '🎯', Impulsivo: '⚡', Dudoso: '🤔',
   Eufórico: '🤩', Frustrado: '😤',
 }
 
+// Claves para ordenar la tabla
 type SortKey = 'fecha' | 'activo' | 'resultado' | 'pnl' | 'lotaje'
 type SortDir = 'asc' | 'desc'
 
+// Componente principal del historial de trades
 export default function Historial() {
   const [trades, setTrades] = useState<Trade[]>([])
   const [search, setSearch] = useState('')
@@ -23,15 +26,18 @@ export default function Historial() {
   useEffect(() => { setTrades(getTrades()) }, [])
   const refresh = () => setTrades(getTrades())
 
+  // Eliminar trade con confirmación
   function handleDelete(id: string) {
     if (confirm('¿Eliminar este trade?')) { deleteTrade(id); refresh() }
   }
 
+  // Cambiar ordenamiento al hacer clic en el encabezado de la tabla
   function handleSort(key: SortKey) {
     if (sortKey === key) setSortDir(d => d === 'asc' ? 'desc' : 'asc')
     else { setSortKey(key); setSortDir('desc') }
   }
 
+  // Filtrar y ordenar trades según búsqueda, filtros y ordenamiento seleccionado
   const filtered = useMemo(() => {
     return trades
       .filter(t => {
@@ -94,7 +100,7 @@ export default function Historial() {
         </button>
       </div>
 
-      {/* Filters */}
+      {/* Filtros */}
       <div className="flex flex-wrap gap-3">
         <div className="relative flex-1 min-w-48">
           <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
@@ -115,7 +121,7 @@ export default function Historial() {
         </select>
       </div>
 
-      {/* Table */}
+      {/* Tabla */}
       {filtered.length === 0 ? (
         <div className="text-center py-20 text-muted-foreground">
           <Search size={40} className="mx-auto mb-3 opacity-20" />

@@ -4,20 +4,21 @@ import { getTrades, saveTrade, deleteTrade, generateId, getStrategies } from '..
 import { TrendingUp, TrendingDown, Plus, Trash2, X } from 'lucide-react'
 
 const EMOTIONS: Emotion[] = [
-  'Sereno', 'Confiado', 'Ansioso', 'FOMO',
+  'Sereno', 'Confiado', 'Ansioso', 'Asustado',
   'Vengativo', 'Disciplinado', 'Impulsivo', 'Dudoso', 'Eufórico', 'Frustrado',
 ]
 
 const EMOTION_EMOJI: Record<Emotion, string> = {
-  Sereno: '😌', Confiado: '💪', Ansioso: '😰', FOMO: '😱',
+  Sereno: '😌', Confiado: '💪', Ansioso: '😰', Asustado: '😱',
   Vengativo: '😡', Disciplinado: '🎯', Impulsivo: '⚡', Dudoso: '🤔',
   Eufórico: '🤩', Frustrado: '😤',
 }
 
 const OUTCOMES: Outcome[] = ['GANANCIA', 'PERDIDA', 'BREAKEVEN', 'ABIERTO']
 
+// Estado inicial para el formulario de trade
 const EMPTY: Omit<Trade, 'id'> = {
-  fecha: new Date().toISOString().slice(0, 10),
+  fecha: new Date().toLocaleDateString('en-CA'), 
   activo: '',
   direccion: 'LONG',
   precioEntrada: 0,
@@ -33,6 +34,7 @@ const EMPTY: Omit<Trade, 'id'> = {
   notas: '',
 }
 
+// Componente principal para el registro de trades
 export default function RegistroTrade() {
   const [trades, setTrades] = useState<Trade[]>([])
   const [form, setForm] = useState<Omit<Trade, 'id'>>(EMPTY)
@@ -40,12 +42,15 @@ export default function RegistroTrade() {
   const [showForm, setShowForm] = useState(false)
   const strategies = getStrategies()
 
+  // Cargar trades al montar el componente
   useEffect(() => {
     setTrades(getTrades())
   }, [])
 
+  // Función para refrescar la lista de trades después de agregar, editar o eliminar
   const refresh = () => setTrades(getTrades())
 
+  // Manejar el envío del formulario para agregar o editar un trade
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     const trade: Trade = { id: editId ?? generateId(), ...form }
@@ -56,6 +61,7 @@ export default function RegistroTrade() {
     refresh()
   }
 
+  // Manejar la edición de un trade, llenando el formulario con los datos existentes
   function handleEdit(t: Trade) {
     const { id, ...rest } = t
     setForm(rest)
@@ -71,6 +77,7 @@ export default function RegistroTrade() {
     }
   }
 
+  // Función auxiliar para actualizar campos del formulario de manera dinámica
   const field = (key: keyof typeof form, val: unknown) =>
     setForm(prev => ({ ...prev, [key]: val }))
 
@@ -89,7 +96,7 @@ export default function RegistroTrade() {
         </button>
       </div>
 
-      {/* Form */}
+      {/* Formulario */}
       {showForm && (
         <div className="bg-card border border-border rounded-lg p-6 shadow-card">
           <div className="flex items-center justify-between mb-5">
@@ -237,7 +244,7 @@ export default function RegistroTrade() {
         </div>
       )}
 
-      {/* Recent trades */}
+      {/* Trades recientes */}
       <div className="space-y-3">
         {trades.length === 0 && (
           <div className="text-center py-16 text-muted-foreground">

@@ -3,6 +3,7 @@ import { Plus, X, Trash2, Edit2, Target, TrendingUp } from 'lucide-react'
 import { getStrategies, saveStrategy, deleteStrategy, generateId } from '../store'
 import type { Strategy } from '../types'
 
+// Estado inicial vacío para el formulario
 const EMPTY: Omit<Strategy, 'id' | 'createdAt'> = {
   nombre: '',
   descripcion: '',
@@ -20,6 +21,7 @@ export default function Estrategias() {
   useEffect(() => { setStrategies(getStrategies()) }, [])
   const refresh = () => setStrategies(getStrategies())
 
+  // Guardar nueva estrategia o actualizar existente
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     const strategy: Strategy = {
@@ -35,6 +37,7 @@ export default function Estrategias() {
     refresh()
   }
 
+  // Editar estrategia: cargar datos en el formulario
   function handleEdit(s: Strategy) {
     const { id, createdAt, ...rest } = s
     setForm(rest)
@@ -42,10 +45,12 @@ export default function Estrategias() {
     setShowForm(true)
   }
 
+  // Eliminar estrategia con confirmación
   function handleDelete(id: string) {
     if (confirm('¿Eliminar esta estrategia?')) { deleteStrategy(id); refresh() }
   }
 
+  // Agregar activo al formulario
   function addAsset() {
     const a = assetInput.trim().toUpperCase()
     if (a && !form.activos.includes(a)) {
@@ -54,6 +59,7 @@ export default function Estrategias() {
     setAssetInput('')
   }
 
+  // Eliminar activo del formulario
   function removeAsset(a: string) {
     setForm(prev => ({ ...prev, activos: prev.activos.filter(x => x !== a) }))
   }
@@ -72,7 +78,7 @@ export default function Estrategias() {
         </button>
       </div>
 
-      {/* Form */}
+      {/* Formulario */}
       {showForm && (
         <div className="bg-card border border-border rounded-lg p-6 shadow-card">
           <div className="flex items-center justify-between mb-5">
@@ -144,7 +150,7 @@ export default function Estrategias() {
         </div>
       )}
 
-      {/* Strategy cards */}
+      {/* Listado de estrategias */}
       {strategies.length === 0 ? (
         <div className="text-center py-20 text-muted-foreground">
           <Target size={40} className="mx-auto mb-3 opacity-20" />
